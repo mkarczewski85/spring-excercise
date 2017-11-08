@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Shop Homepage - Start Bootstrap Template</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+
+</head>
+
+<body>
+
+<!-- Page Content -->
+<div class="container">
+
+    <div class="row">
+
+        <div class="col-lg-3">
+
+            <h1 class="my-4">Shop Name</h1>
+            <div class="list-group">
+                <a href="#" class="list-group-item">Category 1</a>
+                <a href="#" class="list-group-item">Category 2</a>
+                <a href="#" class="list-group-item">Category 3</a>
+            </div>
+
+        </div>
+        <!-- /.col-lg-3 -->
+
+        <div class="col-lg-9">
+
+            <div class="row">
+                <th:block th:each="news : ${allNews}">
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100">
+                            <a href="#"><img class="img-responsive card-img-top" src="http://placehold.it/700x400" alt=""/></a>
+                            <div class="card-body">
+                                <h4 class="card-title">
+                                    <a th:href="'/news/' + ${news.id}" href="#" th:text="${news.title}"></a>
+                                </h4>
+                                <h5 th:text="${news.author.firstName} + ' ' + ${news.author.lastName}"></h5>
+                                <h5 th:text="${news.date}"></h5>
+                                <p class="card-text" th:text="${news.abbreviateDescription}">Lorem ipsum dolor sit amet, consectetur
+                                    adipisicing elit. Amet numquam aspernatur!</p>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+
+            </div>
+            <!-- /.row -->
+
+        </div>
+        <!-- /.col-lg-9 -->
+
+    </div>
+    <!-- /.row -->
+    <form action="/news" method="post">
+
+        <h2>Title</h2>
+        <input type="text" name="title">
+        <br>
+
+        <h2>Description</h2>
+        <input type="text" name="description">
+        <br>
+
+        <h2>Large image path</h2>
+        <input type="text" name="largeImgPath">
+        <br>
+
+        <h2>Small image path</h2>
+        <input type="text" name="smallImgPath">
+        <br>
+
+        <h2>Date</h2>
+        <input type="date" name="date">
+        <br>
+
+        <button type="submit">Save</button>
+    </form>
+</div>
+<!-- /.container -->
+
+<!-- Footer -->
+<footer class="py-5 bg-dark">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Your Website 2017</p>
+    </div>
+    <!-- /.container -->
+</footer>
+
+<!-- Bootstrap core JavaScript -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

@@ -1,7 +1,5 @@
 package com.sda.springjavapoz4.service;
 
-import org.springframework.stereotype.Component;
-
 //@Component
 public class CalcService {
 
