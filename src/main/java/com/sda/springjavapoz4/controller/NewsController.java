@@ -34,7 +34,6 @@ public class NewsController {
 
     @PostMapping
     public String saveNews(@ModelAttribute News news) {
-
         newsService.saveNews(news);
         return "redirect:/news/" + Integer.toString(newsService.getAllNews().size() - 1);
     }
