@@ -1,19 +1,21 @@
 package com.sda.springjavapoz4.service;
 
 import com.sda.springjavapoz4.model.News;
+import com.sda.springjavapoz4.repository.NewsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class NewsService {
 
-    List<News> newsList;
+    @Autowired
+    NewsRepository newsRepository;
 
     @Autowired
     UsersService usersService;
@@ -23,31 +25,27 @@ public class NewsService {
 
     @PostConstruct
     public void init() {
-        this.newsList = new ArrayList<>();
-        newsList.add(generateNews());
-        newsList.add(generateNews());
-        newsList.add(generateNews());
-        newsList.add(generateNews());
-        newsList.add(generateNews());
-        newsList.add(generateNews());
+
+        newsRepository.save(generateNews());
+        newsRepository.save(generateNews());
+        newsRepository.save(generateNews());
+        newsRepository.save(generateNews());
+        newsRepository.save(generateNews());
+        newsRepository.save(generateNews());
     }
 
     public List<News> getAllNews() {
-        return newsList;
+        return StreamSupport.stream(newsRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
     }
 
     public News getNews(long id) {
-        Optional<News> news = newsList.stream().filter(n -> n.getId() == id).findFirst();
-        if (news.isPresent()) {
-            return news.get();
-        }
-        return null;
+        return newsRepository.findOne(id);
     }
 
     public News generateNews() {
         News news = new News();
-        news.setId((long) newsList.size());
-        news.setAuthor(usersService.getExampleUser());
+        news.setAuthor(usersService.getRandomUser());
         news.setTitle("Test");
         news.setDate(LocalDate.now());
         news.setDescription("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet numquam aspernatur!");
@@ -56,10 +54,14 @@ public class NewsService {
         return news;
     }
 
-    public void saveNews(News news){
-        news.setId((long) newsList.size());
-        news.setAuthor(usersService.getRandomUser());
-        newsList.add(news);
+    public int saveNews(News news){
+        return (int) newsRepository.save(news).getId();
+    }
+
+    public int saveNewsWithRandomUser(News news){
+//        news.setAuthor(usersService.getRandomUser());
+//        newsRepository.save(news);
+        return 1;
     }
 
 

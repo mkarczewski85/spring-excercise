@@ -1,6 +1,7 @@
 package com.sda.springjavapoz4.service;
 
 import com.sda.springjavapoz4.model.User;
+import com.sda.springjavapoz4.repository.UsersRepository;
 import com.sda.springjavapoz4.service.generator.FirstNameGenerator;
 import com.sda.springjavapoz4.service.generator.LastNameGenerator;
 import com.sda.springjavapoz4.service.generator.PhoneNumberGenerator;
@@ -8,16 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Component
 public class UsersService {
-
-
-    private List<User> users;
 
     @Autowired
     FirstNameGenerator firstNameGenerator;
@@ -25,53 +23,60 @@ public class UsersService {
     LastNameGenerator lastNameGenerator;
     @Autowired
     PhoneNumberGenerator phoneNumberGenerator;
+    @Autowired
+    private UsersRepository usersRepository;
 
     public UsersService() {
-        this.users = new ArrayList<>();
 
     }
 
     @PostConstruct
     public void init() {
-        this.users.add(getExampleUser());
-        this.users.add(getExampleUser());
-        this.users.add(getExampleUser());
-        this.users.add(getExampleUser());
-        this.users.add(getExampleUser());
-        this.users.add(getExampleUser());
-        this.users.add(getExampleUser());
-        users.forEach(System.out::println);
+        usersRepository.save(getExampleUser());
+        usersRepository.save(getExampleUser());
+        usersRepository.save(getExampleUser());
+        usersRepository.save(getExampleUser());
+        usersRepository.save(getExampleUser());
+        usersRepository.save(getExampleUser());
+        usersRepository.save(getExampleUser());
+        usersRepository.findAll().forEach(System.out::println);
     }
 
 
-    public User getUser(int id) {
-        return id >= users.size() ? null : users.get(id);
+    public User getUser(long id) {
+        return usersRepository.findOne(id);
     }
 
     public User getExampleUser() {
-        return new User((long) users.size(), firstNameGenerator.getRandomFirstName(), lastNameGenerator.getRandomLastName(), phoneNumberGenerator.getRandomNumber());
+        return new User(firstNameGenerator.getRandomFirstName(), lastNameGenerator.getRandomLastName(),
+                phoneNumberGenerator.getRandomNumber());
     }
 
 
     public List<User> getListOfUsersByFirstName(String firstName) {
-        List<User> listOfUsers = users.stream()
-                .filter(user -> user.getFirstName().equals(firstName))
-                .collect(Collectors.toList());
-        return listOfUsers;
+        return usersRepository.findByFirstName(firstName);
     }
 
+    public List<User> getListOfUsersByLastName(String lastName) {
+        return StreamSupport.stream(usersRepository.findAll().spliterator(), false)
+                .filter(user -> user.getFirstName().equals(lastName))
+                .collect(Collectors.toList());
+    }
 
     public List<User> getAllUsers() {
-        return users;
+        return StreamSupport.stream(usersRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
     }
 
     public void addUser(User user) {
-        user.setId((long) users.size());
-        this.users.add(user);
+        usersRepository.save(user);
     }
 
     public User getRandomUser() {
         Random random = new Random();
-        return getUser(random.nextInt(users.size()));
+        long size = usersRepository.findAll().spliterator().getExactSizeIfKnown();
+        return getUser(random.nextInt((int) size));
     }
+
+
 }
